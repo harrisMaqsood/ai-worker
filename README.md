@@ -42,9 +42,38 @@ mistral-small
 mistral-large
 
 cURL Example:
+
 curl --location 'https://llama-worker.harrismaqsoodmir.workers.dev' \
 --header 'Content-Type: application/json' \
 --data '{
-    "prompt": "What does a cat eat?",
-    "model": "llama-3-small"
+  "model": "mistral-small",
+  "messages": [
+    { "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "Explain quantum computing in simple terms." }
+  ],
+  "temperature": 0.8,
+  "max_tokens": 512,
+  "top_p": 0.9,
+  "top_k": 40,
+  "seed": 123,
+  "repetition_penalty": 1.2,
+  "frequency_penalty": 0.1,
+  "presence_penalty": 0.1
 }'
+
+For running locally
+
+use command
+- npm install -g wrangler
+
+clone the repo
+ - cd the-repo
+ - wrangler login
+ - wrangler deploy (Note the deployed Worker URL e.g., https://your-worker.your-subdomain.workers.dev)
+
+for running locally
+ - npm run dev  OR
+ - wrangler dev
+
+Future challenges
+We can give other features like choices by using the model to generate the response multiple times simultaneously and use it as choices. 

@@ -3,6 +3,7 @@ Cloudflare Workers AI Chat Completion API
 Overview
 
 This project implements an API similar to OpenAI's chat completions using Cloudflare Workers AI and Llama 3 + Mistral models. The API provides chat completion capabilities using both small and large models from Llama 3 and Mistral.
+HTTP was chosen as the communication protocol due to its simplicity, universality, and ease of integration.
 
 Features
 

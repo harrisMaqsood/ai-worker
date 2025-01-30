@@ -25,6 +25,8 @@ Model selection is optional (defaults to Llama 3 Large).
 
 Implements basic error handling.
 
+Added option for getting multiple responses(choices) of the messages at the same time by giving n in payload of API.
+
 API Usage
 
 Endpoint: POST https://llama-worker.harrismaqsoodmir.workers.dev
@@ -58,7 +60,9 @@ curl --location 'https://llama-worker.harrismaqsoodmir.workers.dev' \
   "seed": 123,
   "repetition_penalty": 1.2,
   "frequency_penalty": 0.1,
-  "presence_penalty": 0.1
+  "presence_penalty": 0.1,
+  "n": 3
+
 }'
 
 For running locally
@@ -75,5 +79,3 @@ for running locally
  - npm run dev  OR
  - wrangler dev
 
-Future challenges
-We can give other features like choices by using the model to generate the response multiple times simultaneously and use it as choices. 

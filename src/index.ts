@@ -8,6 +8,7 @@ export default {
 			top_p?: number;
 			top_k?: number;
 			seed?: number;
+			n?: number;
 			repetition_penalty?: number;
 			frequency_penalty?: number;
 			presence_penalty?: number;
@@ -41,6 +42,7 @@ export default {
 				frequency_penalty = 0.0,
 				presence_penalty = 0.0,
 				model,
+				n = 1,
 			}: RequestBody = await request.json();
 
 			if (!messages || messages.length <= 0) {
@@ -54,6 +56,13 @@ export default {
 				return Response.json({
 					status: 400,
 					message: 'Invalid model provided. Please use a valid model name.',
+				});
+			}
+
+			if (n <= 0 || n > 3) {
+				return Response.json({
+					status: 400,
+					message: 'number of choices can not be less than 1 and greater than 3',
 				});
 			}
 
@@ -83,11 +92,34 @@ export default {
 				presence_penalty,
 			};
 
-			const response = await env.AI.run(modelToUse, modelParams);
+			const completions = [];
+			const usage = {
+				prompt_tokens: 27,
+				completion_tokens: 329,
+				total_tokens: 356,
+			};
+			for (let i = 0; i < n; i++) {
+				completions.push(env.AI.run(modelToUse, modelParams));
+			}
+
+			const choices = (await Promise.allSettled(completions)).map((completion) => {
+				if (completion.status === 'fulfilled') {
+					usage.prompt_tokens += completion.value?.usage?.prompt_tokens;
+					usage.completion_tokens += completion.value?.usage?.completion_tokens;
+					usage.total_tokens += completion.value?.usage?.total_tokens;
+					return {
+						message: completion.value?.response,
+					};
+				}
+				return null;
+			});
 
 			return Response.json({
 				status: 200,
-				response,
+				response: {
+					choices: choices.filter((choice) => choice !== null),
+					usage,
+				},
 			});
 		} catch (error) {
 			console.log(error);
